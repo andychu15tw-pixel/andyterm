@@ -1,8 +1,9 @@
-"""ui/main_window.py — MoxaTerm 主視窗 (最小可用版)。
+"""ui/main_window.py — MoxaTerm 主視窗。
 
 結論先寫:
-    - MainWindow 包含 QTabWidget 多 session 分頁。
-    - File → New Serial Session:hardcode 連預設 serial port,開啟終端機分頁。
+    - MainWindow 包含左側 SessionTreeView + 右側 QTabWidget。
+    - File → New Serial/SSH Session → NewSessionDialog。
+    - session tree 雙擊 → 開對應 session 分頁。
     - 狀態列顯示目前連線狀態。
     - 關閉視窗時正確停止所有 worker 與 QThread。
 
@@ -11,23 +12,25 @@
 
 from __future__ import annotations
 
-import sys
 from dataclasses import dataclass, field
 from typing import Any
 
 from PySide6.QtCore import QThread
 from PySide6.QtWidgets import (
-    QInputDialog,
     QLabel,
     QMainWindow,
     QMessageBox,
+    QSplitter,
     QTabWidget,
     QVBoxLayout,
     QWidget,
 )
 
 from moxaterm.core.serial_session import SerialSession
-from moxaterm.core.session import SerialConfig
+from moxaterm.core.session import SerialConfig, SessionConfig, SshConfig
+from moxaterm.core.session_store import SessionStore
+from moxaterm.ui.dialogs.new_session_dialog import NewSessionDialog
+from moxaterm.ui.session_tree import SessionTreeView
 from moxaterm.ui.terminal_widget import TerminalWidget
 from moxaterm.ui.workers.serial_worker import SerialWorker
 
@@ -42,14 +45,14 @@ class _SerialTab:
     session: SerialSession
     worker: SerialWorker
     thread: QThread
-    status_label: QLabel = field(default_factory=lambda: QLabel("連線中…"))
+    status_label: QLabel = field(default_factory=lambda: QLabel())
 
 
 class MainWindow(QMainWindow):
     """MoxaTerm 主視窗。
 
     結論:
-        - QTabWidget 為核心,每個 session 一個 tab。
+        - 左側 SessionTreeView + 右側 QTabWidget (QSplitter)。
         - Serial Worker 在獨立 QThread 中執行讀取迴圈。
         - closeEvent 確保所有 thread 正確停止。
     """
@@ -57,17 +60,34 @@ class MainWindow(QMainWindow):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("MoxaTerm")
-        self.resize(1024, 680)
+        self.resize(1200, 720)
 
+        self._store = SessionStore()
+
+        # 左側 session tree
+        self._session_tree = SessionTreeView(self._store)
+        self._session_tree.setMinimumWidth(180)
+        self._session_tree.setMaximumWidth(300)
+        self._session_tree.session_activated.connect(self._open_session_by_id)
+        self._session_tree.session_delete_requested.connect(self._delete_session)
+
+        # 右側 tabs
         self._tabs: QTabWidget = QTabWidget()
         self._tabs.setTabsClosable(True)
         self._tabs.setMovable(True)
         self._tabs.tabCloseRequested.connect(self._close_tab)
 
+        # Splitter 組合
+        splitter = QSplitter()
+        splitter.addWidget(self._session_tree)
+        splitter.addWidget(self._tabs)
+        splitter.setStretchFactor(0, 0)
+        splitter.setStretchFactor(1, 1)
+
         central = QWidget()
         layout = QVBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self._tabs)
+        layout.addWidget(splitter)
         self.setCentralWidget(central)
 
         self._status_label = QLabel("準備就緒 / Ready")
@@ -86,9 +106,9 @@ class MainWindow(QMainWindow):
 
         file_menu = menu_bar.addMenu("檔案(&F)")
 
-        new_serial = file_menu.addAction("新增序列埠連線 / &New Serial Session")
+        new_serial = file_menu.addAction("新增序列埠 / &New Serial Session")
         new_serial.setShortcut("Ctrl+N")
-        new_serial.triggered.connect(self._new_serial_session)
+        new_serial.triggered.connect(self._new_session_dialog)
 
         file_menu.addSeparator()
 
@@ -96,36 +116,71 @@ class MainWindow(QMainWindow):
         exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(self.close)
 
+        session_menu = menu_bar.addMenu("連線(&S)")
+        close_tab = session_menu.addAction("關閉分頁 / &Close Tab")
+        close_tab.setShortcut("Ctrl+W")
+        close_tab.triggered.connect(self._close_current_tab)
+
     # ------------------------------------------------------------------
-    # 新增序列埠 session
+    # 新增 session
     # ------------------------------------------------------------------
 
-    def _new_serial_session(self) -> None:
-        """顯示簡單 port 輸入對話框並開啟新的序列埠分頁。"""
-        default_port = "COM1" if sys.platform == "win32" else "/dev/ttyUSB0"
-        port, ok = QInputDialog.getText(
-            self,
-            "新增序列埠連線 / New Serial Session",
-            "Port:",
-            text=default_port,
-        )
-        if not ok or not port.strip():
+    def _new_session_dialog(self) -> None:
+        dlg = NewSessionDialog(self)
+        if dlg.exec() != NewSessionDialog.DialogCode.Accepted:
             return
-
         try:
-            config = SerialConfig(name=port.strip(), port=port.strip())
+            config = dlg.result_config()
         except Exception as exc:
             QMessageBox.critical(
-                self,
-                "設定錯誤 / Config Error",
+                self, "設定錯誤 / Config Error",
                 f"無效設定 / Invalid config:\n{exc}",
             )
             return
 
-        self._open_serial_tab(config)
+        session_id = self._store.add(config)
+        self._session_tree.refresh()
+        self._open_session_by_config(config, session_id)
+
+    def _open_session_by_id(self, session_id: str) -> None:
+        """從 session store 讀取設定並開啟分頁。"""
+        data = self._store.get(session_id)
+        if not data:
+            return
+        try:
+            config = SessionStore.config_from_dict(data)
+        except Exception as exc:
+            QMessageBox.critical(
+                self, "設定錯誤 / Config Error",
+                f"無法載入 / Cannot load:\n{exc}",
+            )
+            return
+        self._open_session_by_config(config, session_id)
+
+    def _open_session_by_config(self, config: SessionConfig, session_id: str) -> None:
+        if isinstance(config, SerialConfig):
+            self._open_serial_tab(config)
+        elif isinstance(config, SshConfig):
+            QMessageBox.information(
+                self, "SSH",
+                f"SSH 連線 {config.host} — Day 5+ 實作 / SSH tab coming in Day 5+",
+            )
+
+    def _delete_session(self, session_id: str) -> None:
+        reply = QMessageBox.question(
+            self,
+            "確認刪除 / Confirm Delete",
+            "確定要刪除這個連線設定嗎? / Delete this session?",
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self._store.remove(session_id)
+            self._session_tree.refresh()
+
+    # ------------------------------------------------------------------
+    # Serial tab
+    # ------------------------------------------------------------------
 
     def _open_serial_tab(self, config: SerialConfig) -> None:
-        """建立 SerialSession + Worker + QThread 並加入新分頁。"""
         term = TerminalWidget(cols=80, rows=24)
         session = SerialSession(config)
         worker = SerialWorker(session)
@@ -133,19 +188,13 @@ class MainWindow(QMainWindow):
 
         worker.moveToThread(thread)
 
-        # 連線 signals — moveToThread 之後才 connect
         thread.started.connect(worker.start)
         worker.data_received.connect(term.feed)
-        worker.connected.connect(
-            lambda: self._on_serial_connected(config.name)
-        )
-        worker.disconnected.connect(
-            lambda: self._on_serial_disconnected(config.name)
-        )
+        worker.connected.connect(lambda: self._on_serial_connected(config.name))
+        worker.disconnected.connect(lambda: self._on_serial_disconnected(config.name))
         worker.error_occurred.connect(self._on_serial_error)
         term.data_to_send.connect(worker.write)
 
-        # 包成 container widget
         container = QWidget()
         vbox = QVBoxLayout(container)
         vbox.setContentsMargins(0, 0, 0, 0)
@@ -181,13 +230,16 @@ class MainWindow(QMainWindow):
         QMessageBox.warning(self, "序列埠錯誤 / Serial Error", msg)
         self._status_label.setText(f"錯誤 / Error: {msg[:60]}")
 
+    def _close_current_tab(self) -> None:
+        idx = self._tabs.currentIndex()
+        if idx >= 0:
+            self._close_tab(idx)
+
     def _close_tab(self, index: int) -> None:
-        """關閉分頁並停止對應的 worker thread。"""
         if index in self._active_tabs:
             tab = self._active_tabs.pop(index)
             self._stop_tab(tab)
 
-        # 重建 index 對應表 (tabs shift after removal)
         self._tabs.removeTab(index)
         self._rebuild_tab_index()
 
@@ -198,7 +250,6 @@ class MainWindow(QMainWindow):
         tab.status_label.deleteLater()
 
     def _rebuild_tab_index(self) -> None:
-        """重新建立 tab index → _SerialTab 的對應表。"""
         new_map: dict[int, _SerialTab] = {}
         for i in range(self._tabs.count()):
             container = self._tabs.widget(i)
@@ -213,7 +264,6 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------
 
     def closeEvent(self, event: Any) -> None:  # noqa: N802
-        """關閉視窗前停止所有 worker thread。"""
         for tab in list(self._active_tabs.values()):
             self._stop_tab(tab)
         self._active_tabs.clear()
