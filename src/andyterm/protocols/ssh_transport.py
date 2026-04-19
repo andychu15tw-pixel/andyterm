@@ -24,10 +24,10 @@ from typing import TYPE_CHECKING
 import asyncssh
 import paramiko
 
-from moxaterm.protocols.serial_transport import TransportError
+from andyterm.protocols.serial_transport import TransportError
 
 if TYPE_CHECKING:
-    from moxaterm.core.session import SshConfig
+    from andyterm.core.session import SshConfig
 
 __all__ = [
     "HostKeyMissingError",

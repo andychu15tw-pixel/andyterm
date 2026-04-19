@@ -1,4 +1,4 @@
-"""ui/main_window.py — MoxaTerm 主視窗。
+"""ui/main_window.py — AndyTerm 主視窗。
 
 結論先寫:
     - MainWindow 包含左側 SessionTreeView + 右側 QTabWidget。
@@ -26,18 +26,18 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from moxaterm.core.serial_session import SerialSession
-from moxaterm.core.session import SerialConfig, SessionConfig, SshConfig
-from moxaterm.core.session_store import SessionStore
-from moxaterm.core.sftp_session import SftpSession
-from moxaterm.core.ssh_session import SshSession
-from moxaterm.ui.dialogs.about_dialog import AboutDialog
-from moxaterm.ui.dialogs.new_session_dialog import NewSessionDialog
-from moxaterm.ui.session_tree import SessionTreeView
-from moxaterm.ui.sftp_panel import SftpPanel
-from moxaterm.ui.terminal_widget import TerminalWidget
-from moxaterm.ui.workers.serial_worker import SerialWorker
-from moxaterm.ui.workers.ssh_worker import SshWorker
+from andyterm.core.serial_session import SerialSession
+from andyterm.core.session import SerialConfig, SessionConfig, SshConfig
+from andyterm.core.session_store import SessionStore
+from andyterm.core.sftp_session import SftpSession
+from andyterm.core.ssh_session import SshSession
+from andyterm.ui.dialogs.about_dialog import AboutDialog
+from andyterm.ui.dialogs.new_session_dialog import NewSessionDialog
+from andyterm.ui.session_tree import SessionTreeView
+from andyterm.ui.sftp_panel import SftpPanel
+from andyterm.ui.terminal_widget import TerminalWidget
+from andyterm.ui.workers.serial_worker import SerialWorker
+from andyterm.ui.workers.ssh_worker import SshWorker
 
 __all__ = ["MainWindow"]
 
@@ -61,11 +61,11 @@ class _SshTab:
 
 
 class MainWindow(QMainWindow):
-    """MoxaTerm 主視窗。"""
+    """AndyTerm 主視窗。"""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("MoxaTerm")
+        self.setWindowTitle("AndyTerm")
         self.resize(1200, 720)
 
         self._store = SessionStore()

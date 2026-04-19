@@ -1,9 +1,9 @@
-"""__main__.py — MoxaTerm 入口點。
+"""__main__.py — AndyTerm 入口點。
 
 結論先寫:
     - main() 建立 QApplication (qasync event loop),show MainWindow,執行。
     - qasync.QEventLoop 整合 asyncio 與 Qt event loop,供 SFTP async 操作使用。
-    - python -m moxaterm 或 moxaterm CLI 皆由此進入。
+    - python -m andyterm 或 andyterm CLI 皆由此進入。
 """
 
 from __future__ import annotations
@@ -13,11 +13,11 @@ import sys
 
 
 def main() -> None:
-    """MoxaTerm 主進入點。"""
+    """AndyTerm 主進入點。"""
     import qasync
 
-    from moxaterm.app import create_app
-    from moxaterm.ui.main_window import MainWindow
+    from andyterm.app import create_app
+    from andyterm.ui.main_window import MainWindow
 
     app = create_app(sys.argv)
 

@@ -11,12 +11,12 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from moxaterm.core.ansi_parser import AnsiTerminal
-from moxaterm.core.serial_session import SerialSession
-from moxaterm.core.session import SerialConfig, SshConfig
-from moxaterm.core.sftp_session import SftpSession
-from moxaterm.core.ssh_session import SshSession
-from moxaterm.moxa.uport_info import MOXA_PID_MAP, UPortInfo, scan_moxa_uport
+from andyterm.core.ansi_parser import AnsiTerminal
+from andyterm.core.serial_session import SerialSession
+from andyterm.core.session import SerialConfig, SshConfig
+from andyterm.core.sftp_session import SftpSession
+from andyterm.core.ssh_session import SshSession
+from andyterm.moxa.uport_info import MOXA_PID_MAP, UPortInfo, scan_moxa_uport
 
 # ---------------------------------------------------------------------------
 # Helpers / 共用 fixtures
@@ -48,7 +48,7 @@ class TestSerialSession:
         """patch SerialTransport 建構子,回傳 MagicMock。"""
         mock = MagicMock()
         mocker.patch(
-            "moxaterm.core.serial_session.SerialTransport",
+            "andyterm.core.serial_session.SerialTransport",
             return_value=mock,
         )
         return mock
@@ -138,7 +138,7 @@ class TestSshSession:
         mock = MagicMock()
         mock.is_connected = False
         mocker.patch(
-            "moxaterm.core.ssh_session.SshShellTransport",
+            "andyterm.core.ssh_session.SshShellTransport",
             return_value=mock,
         )
         return mock
@@ -244,7 +244,7 @@ class TestSftpSession:
         mock.listdir = AsyncMock(return_value=[])
         mock.get = AsyncMock()
         mocker.patch(
-            "moxaterm.core.sftp_session.SftpTransport",
+            "andyterm.core.sftp_session.SftpTransport",
             return_value=mock,
         )
         return mock
@@ -369,7 +369,7 @@ class TestUPortInfoAndScan:
     # --- 3 ---
     def test_scan_empty_when_no_ports(self, mocker):
         mocker.patch(
-            "moxaterm.moxa.uport_info.list_ports.comports",
+            "andyterm.moxa.uport_info.list_ports.comports",
             return_value=[],
         )
         assert scan_moxa_uport() == []
@@ -380,7 +380,7 @@ class TestUPortInfoAndScan:
         fake_port.vid = 0x1234
         fake_port.pid = 0x0001
         mocker.patch(
-            "moxaterm.moxa.uport_info.list_ports.comports",
+            "andyterm.moxa.uport_info.list_ports.comports",
             return_value=[fake_port],
         )
         assert scan_moxa_uport() == []
@@ -393,7 +393,7 @@ class TestUPortInfoAndScan:
         fake_port.device = "COM3"
         fake_port.description = "Moxa UPort 1410"
         mocker.patch(
-            "moxaterm.moxa.uport_info.list_ports.comports",
+            "andyterm.moxa.uport_info.list_ports.comports",
             return_value=[fake_port],
         )
         result = scan_moxa_uport()
@@ -409,7 +409,7 @@ class TestUPortInfoAndScan:
         fake_port.device = "COM9"
         fake_port.description = "Unknown Moxa device"
         mocker.patch(
-            "moxaterm.moxa.uport_info.list_ports.comports",
+            "andyterm.moxa.uport_info.list_ports.comports",
             return_value=[fake_port],
         )
         result = scan_moxa_uport()
@@ -436,7 +436,7 @@ class TestUPortInfoAndScan:
         non_moxa.pid = 0x0001
 
         mocker.patch(
-            "moxaterm.moxa.uport_info.list_ports.comports",
+            "andyterm.moxa.uport_info.list_ports.comports",
             return_value=[moxa1, moxa2, non_moxa],
         )
         result = scan_moxa_uport()
@@ -453,7 +453,7 @@ class TestUPortInfoAndScan:
         fake_port.device = "COM5"
         fake_port.description = None
         mocker.patch(
-            "moxaterm.moxa.uport_info.list_ports.comports",
+            "andyterm.moxa.uport_info.list_ports.comports",
             return_value=[fake_port],
         )
         # 不應該 raise;未知 PID 使用預設值

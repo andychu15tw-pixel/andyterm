@@ -1,5 +1,5 @@
 [project]
-name = "moxaterm"
+name = "andyterm"
 version = "0.1.0"
 description = "Serial & SFTP GUI tool for industrial embedded computers"
 authors = [{ name = "Andy", email = "andy@moxa.com" }]
@@ -32,7 +32,7 @@ build = [
 ]
 
 [project.scripts]
-moxaterm = "moxaterm.__main__:main"
+andyterm = "andyterm.__main__:main"
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -84,5 +84,5 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src/moxaterm"]
+source = ["src/andyterm"]
 omit = ["*/tests/*", "*/__main__.py"]

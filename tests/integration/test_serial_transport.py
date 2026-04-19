@@ -15,8 +15,8 @@ import pytest
 import serial
 import serial.serialutil
 
-from moxaterm.core.session import SerialConfig
-from moxaterm.protocols.serial_transport import (
+from andyterm.core.session import SerialConfig
+from andyterm.protocols.serial_transport import (
     SerialTransport,
     TransportError,
     list_serial_ports,
@@ -86,7 +86,7 @@ class TestListSerialPorts:
         non_moxa_port.pid = 0x6001
 
         mocker.patch(
-            "moxaterm.protocols.serial_transport.list_ports.comports",
+            "andyterm.protocols.serial_transport.list_ports.comports",
             return_value=[moxa_port, non_moxa_port],
         )
 
@@ -110,7 +110,7 @@ class TestListSerialPorts:
     def test_list_serial_ports_empty_when_no_ports(self, mocker: MagicMock) -> None:
         """系統無序列埠時回傳空 list。"""
         mocker.patch(
-            "moxaterm.protocols.serial_transport.list_ports.comports",
+            "andyterm.protocols.serial_transport.list_ports.comports",
             return_value=[],
         )
         assert list_serial_ports() == []
@@ -124,7 +124,7 @@ class TestListSerialPorts:
         port.pid = None
 
         mocker.patch(
-            "moxaterm.protocols.serial_transport.list_ports.comports",
+            "andyterm.protocols.serial_transport.list_ports.comports",
             return_value=[port],
         )
 

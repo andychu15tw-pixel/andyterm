@@ -15,9 +15,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from moxaterm.core.ansi_parser import AnsiTerminal
-from moxaterm.core.session import SerialConfig, Session, SessionConfig
-from moxaterm.protocols.serial_transport import SerialTransport
+from andyterm.core.ansi_parser import AnsiTerminal
+from andyterm.core.session import SerialConfig, Session, SessionConfig
+from andyterm.protocols.serial_transport import SerialTransport
 
 __all__ = ["SerialSession"]
 

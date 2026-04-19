@@ -1,4 +1,4 @@
-# MoxaTerm — Serial & SFTP GUI Tool
+# AndyTerm — Serial & SFTP GUI Tool
 
 類似 Xshell / Xftp 的跨平台 GUI 工具,專注於工業嵌入式電腦的 console 存取與檔案傳輸。主要服務對象為 Moxa FAE/AE 工程師與客戶現場除錯情境。
 
@@ -35,8 +35,8 @@
 ## Project Structure
 
 ```
-moxaterm/
-├── src/moxaterm/
+andyterm/
+├── src/andyterm/
 │   ├── __main__.py              # entry point
 │   ├── app.py                   # QApplication bootstrap
 │   ├── ui/                      # Qt widgets (View 層)
@@ -96,7 +96,7 @@ moxaterm/
 ### 錯誤處理
 - 客戶現場使用,錯誤訊息**必須雙語** (繁中 + English)
 - 網路/序列埠錯誤要區分 recoverable vs fatal
-- 所有例外都要寫進 `~/.moxaterm/logs/` (rotating)
+- 所有例外都要寫進 `~/.andyterm/logs/` (rotating)
 
 ### 安全
 - 密碼優先用 `keyring` (Windows Credential Manager / macOS Keychain / Secret Service)
@@ -114,20 +114,20 @@ uv venv && source .venv/bin/activate   # 或 .venv\Scripts\activate
 uv pip install -e ".[dev]"
 
 # 執行
-python -m moxaterm
+python -m andyterm
 
 # 檢查
 ruff check src tests
 ruff format src tests
 mypy src
-pytest -v --cov=moxaterm
+pytest -v --cov=andyterm
 
 # 打包 (Windows)
 pyinstaller --onefile --windowed --icon=resources/app.ico \
-  --name MoxaTerm src/moxaterm/__main__.py
+  --name AndyTerm src/andyterm/__main__.py
 
 # Moxa NPort 掃描測試 (需實機)
-python -m moxaterm.moxa.nport_discovery
+python -m andyterm.moxa.nport_discovery
 ```
 
 ---

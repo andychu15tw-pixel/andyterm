@@ -1,6 +1,6 @@
 ---
 name: sftp-client
-description: Use this skill when implementing or debugging SSH and SFTP functionality in MoxaTerm — including paramiko Transport/SSHClient/SFTPClient, asyncssh async connections, public-key authentication (RSA/Ed25519), password and passphrase handling via keyring, host key verification (known_hosts), jump host / ProxyCommand, file transfer with progress callbacks, recursive directory sync, permission preservation, SFTP on resource-constrained Moxa ARM devices, and handling SSH connection issues (algorithm negotiation, handshake timeout, channel EOF, broken pipe). Trigger when user mentions "SSH", "SFTP", "paramiko", "asyncssh", "ssh key", "known_hosts", "proxy jump", "file transfer", "檔案傳輸", "上傳", "下載", or encounters authentication failures or transfer stalls.
+description: Use this skill when implementing or debugging SSH and SFTP functionality in AndyTerm — including paramiko Transport/SSHClient/SFTPClient, asyncssh async connections, public-key authentication (RSA/Ed25519), password and passphrase handling via keyring, host key verification (known_hosts), jump host / ProxyCommand, file transfer with progress callbacks, recursive directory sync, permission preservation, SFTP on resource-constrained Moxa ARM devices, and handling SSH connection issues (algorithm negotiation, handshake timeout, channel EOF, broken pipe). Trigger when user mentions "SSH", "SFTP", "paramiko", "asyncssh", "ssh key", "known_hosts", "proxy jump", "file transfer", "檔案傳輸", "上傳", "下載", or encounters authentication failures or transfer stalls.
 ---
 
 # SSH / SFTP Implementation
@@ -13,7 +13,7 @@ description: Use this skill when implementing or debugging SSH and SFTP function
 | SFTP 大量傳輸 | **asyncssh** | 非同步、並行、進度回報好寫 |
 | SFTP 單檔小量 | paramiko 也行 | 但要丟 QThread |
 
-**MoxaTerm 策略**: SSH shell 用 paramiko + QThread,SFTP 用 asyncssh + qasync。兩者共用 session 設定但**獨立建立連線**,避免互相影響。
+**AndyTerm 策略**: SSH shell 用 paramiko + QThread,SFTP 用 asyncssh + qasync。兩者共用 session 設定但**獨立建立連線**,避免互相影響。
 
 ---
 
@@ -188,7 +188,7 @@ class ThrottledProgress:
 ```python
 import keyring
 
-SERVICE = "moxaterm"
+SERVICE = "andyterm"
 
 def save_password(session_id: str, username: str, password: str):
     keyring.set_password(SERVICE, f"{session_id}:{username}", password)
@@ -268,8 +268,8 @@ class InteractiveHostKeyPolicy(MissingHostKeyPolicy):
 ```
 
 Known hosts 檔路徑:
-- Windows: `%APPDATA%/MoxaTerm/known_hosts`
-- Linux/macOS: `~/.config/moxaterm/known_hosts`
+- Windows: `%APPDATA%/AndyTerm/known_hosts`
+- Linux/macOS: `~/.config/andyterm/known_hosts`
 
 ---
 

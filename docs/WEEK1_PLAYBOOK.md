@@ -1,4 +1,4 @@
-# MoxaTerm 第一週開發 Playbook
+# AndyTerm 第一週開發 Playbook
 
 > 使用方式:
 > - 每天開工前 `/clear` 清 context
@@ -13,15 +13,15 @@
 **目標**: 把最底層、無依賴的 `core/` 檔案立起來,奠定分層基礎。
 
 **產出**:
-- `src/moxaterm/core/__init__.py`
-- `src/moxaterm/core/ansi_parser.py` — pyte wrapper
-- `src/moxaterm/core/session.py` — Session abstract base + 型別定義
+- `src/andyterm/core/__init__.py`
+- `src/andyterm/core/ansi_parser.py` — pyte wrapper
+- `src/andyterm/core/session.py` — Session abstract base + 型別定義
 - `tests/core/test_ansi_parser.py`
 
 ### 1-A 建立 package skeleton
 
 ```
-請依照 CLAUDE.md 的 Project Structure 章節,建立 src/moxaterm/ 下所有
+請依照 CLAUDE.md 的 Project Structure 章節,建立 src/andyterm/ 下所有
 package 目錄 (ui, core, protocols, moxa, utils) 與對應的 __init__.py 空檔。
 tests/ 下也建 core/, integration/, ui/, conftest.py。
 建完後列出 tree,等我確認再繼續。
@@ -32,7 +32,7 @@ tests/ 下也建 core/, integration/, ui/, conftest.py。
 ### 1-B 實作 ansi_parser.py
 
 ```
-請實作 src/moxaterm/core/ansi_parser.py。
+請實作 src/andyterm/core/ansi_parser.py。
 
 需求 (conclusions-first):
 - class AnsiTerminal,建構子 cols=80, rows=24
@@ -57,7 +57,7 @@ tests/ 下也建 core/, integration/, ui/, conftest.py。
 ### 1-C 實作 session.py
 
 ```
-請實作 src/moxaterm/core/session.py,包含:
+請實作 src/andyterm/core/session.py,包含:
 
 1. SessionType enum: SERIAL, SSH, SFTP, RFC2217, TCP_RAW
 2. SessionConfig: pydantic BaseModel,所有 session 共用欄位
@@ -87,7 +87,7 @@ tests/ 下也建 core/, integration/, ui/, conftest.py。
 - ansi_parser: plain text / CR LF / color codes / UTF-8 跨 chunk / resize
 - session: pydantic 驗證 / serialization / enum 轉換
 
-寫完跑 pytest -v --cov=moxaterm.core,目標 pass + coverage 達標。
+寫完跑 pytest -v --cov=andyterm.core,目標 pass + coverage 達標。
 ```
 
 ### 1-E 收尾
@@ -106,8 +106,8 @@ git add . && git commit -m "Day 1: core foundation (ansi_parser, session)"
 **目標**: 純 I/O 層完成,之後 core session 可以呼叫它們。
 
 **產出**:
-- `src/moxaterm/protocols/serial_transport.py`
-- `src/moxaterm/protocols/ssh_transport.py`
+- `src/andyterm/protocols/serial_transport.py`
+- `src/andyterm/protocols/ssh_transport.py`
 - `tests/integration/test_serial_transport.py` (pty-based, Linux only)
 - `tests/integration/test_ssh_transport.py` (asyncssh fake server)
 
@@ -118,7 +118,7 @@ git add . && git commit -m "Day 1: core foundation (ansi_parser, session)"
 @CLAUDE.md @docs/WEEK1_PLAYBOOK.md
 今天做 Day 2。
 
-先實作 src/moxaterm/protocols/serial_transport.py:
+先實作 src/andyterm/protocols/serial_transport.py:
 
 - class SerialTransport (非 QObject,純 Python,讓 core/ 可用):
     - 建構子吃 SerialConfig
@@ -137,7 +137,7 @@ git add . && git commit -m "Day 1: core foundation (ansi_parser, session)"
 ### 2-B
 
 ```
-現在實作 src/moxaterm/protocols/ssh_transport.py:
+現在實作 src/andyterm/protocols/ssh_transport.py:
 
 - class SshShellTransport (paramiko 同步版):
     - 吃 SshConfig + password (從 keyring 傳進來)
@@ -183,10 +183,10 @@ git commit -am "Day 2: protocols (serial, ssh, sftp transports)"
 **目標**: 把 protocols 包成 Session,加上非同步資料流 + 事件。
 
 **產出**:
-- `src/moxaterm/core/serial_session.py`
-- `src/moxaterm/core/ssh_session.py`
-- `src/moxaterm/core/sftp_session.py`
-- `src/moxaterm/moxa/uport_info.py` — UPort 識別 (簡單,直接可用)
+- `src/andyterm/core/serial_session.py`
+- `src/andyterm/core/ssh_session.py`
+- `src/andyterm/core/sftp_session.py`
+- `src/andyterm/moxa/uport_info.py` — UPort 識別 (簡單,直接可用)
 
 ### 3-A
 
@@ -235,7 +235,7 @@ git commit -am "Day 2: protocols (serial, ssh, sftp transports)"
 ### 3-C 收尾
 
 ```bash
-pytest -v --cov=moxaterm --cov-report=term-missing
+pytest -v --cov=andyterm --cov-report=term-missing
 git commit -am "Day 3: core sessions + moxa uport info"
 ```
 
@@ -246,11 +246,11 @@ git commit -am "Day 3: core sessions + moxa uport info"
 **目標**: 能看到視窗、能跑空終端機、能點按鈕連 serial loopback。
 
 **產出**:
-- `src/moxaterm/app.py`
-- `src/moxaterm/__main__.py`
-- `src/moxaterm/ui/main_window.py`
-- `src/moxaterm/ui/terminal_widget.py`
-- `src/moxaterm/ui/workers/serial_worker.py` (QThread wrapper)
+- `src/andyterm/app.py`
+- `src/andyterm/__main__.py`
+- `src/andyterm/ui/main_window.py`
+- `src/andyterm/ui/terminal_widget.py`
+- `src/andyterm/ui/workers/serial_worker.py` (QThread wrapper)
 
 ### 4-A Bootstrap
 
@@ -258,20 +258,20 @@ git commit -am "Day 3: core sessions + moxa uport info"
 /clear
 @CLAUDE.md @.claude/skills/pyside6-gui/SKILL.md
 
-實作 src/moxaterm/app.py 與 __main__.py:
+實作 src/andyterm/app.py 與 __main__.py:
 
 - app.py: create_app() 函式,設定 high-DPI、載入 QSS、註冊
   QMetaType for bytes,回傳 QApplication
 - __main__.py: def main(),build MainWindow, show, app.exec()
 - 用 qasync 整合 asyncio event loop (給後續 SFTP 用)
 
-確保 python -m moxaterm 能開一個空視窗。
+確保 python -m andyterm 能開一個空視窗。
 ```
 
 ### 4-B TerminalWidget
 
 ```
-實作 src/moxaterm/ui/terminal_widget.py。
+實作 src/andyterm/ui/terminal_widget.py。
 
 參考 .claude/skills/pyside6-gui/SKILL.md 的 Terminal Widget 章節,以及
 .claude/skills/serial-terminal/SKILL.md 的 Keyboard Input Encoding 章節。
@@ -297,19 +297,19 @@ git commit -am "Day 3: core sessions + moxa uport info"
 ```
 實作:
 
-1. src/moxaterm/ui/workers/serial_worker.py:
+1. src/andyterm/ui/workers/serial_worker.py:
    - QObject,moveToThread 用
    - 接 SerialSession,在 QThread 裡跑 read loop,emit data_received signal
    - slots: start(), stop(), write(bytes)
    - 參考 pyside6-gui skill 的 Pattern: Serial Worker
 
-2. src/moxaterm/ui/main_window.py (最小版):
+2. src/andyterm/ui/main_window.py (最小版):
    - 主視窗 + 一個 QTabWidget (空的)
    - File menu: New Serial Session (暫時 hardcode 連 /tmp/ttyV0 或 COM1)
    - 連上後開一個 tab,裡面放 TerminalWidget + SerialWorker
    - 狀態列顯示連線狀態
 
-讓我能 python -m moxaterm,點選 New Serial Session,看到 terminal 出現。
+讓我能 python -m andyterm,點選 New Serial Session,看到 terminal 出現。
 先不做 session dialog,下一天做。
 ```
 
@@ -322,7 +322,7 @@ Linux/macOS 手動測試:
 socat -d -d pty,raw,echo=0,link=/tmp/ttyV0 pty,raw,echo=0,link=/tmp/ttyV1 &
 # 另一個 terminal 手動送資料到 /tmp/ttyV1
 echo "Hello from fake serial" > /tmp/ttyV1
-# 然後 MoxaTerm 連 /tmp/ttyV0 應該能看到訊息
+# 然後 AndyTerm 連 /tmp/ttyV0 應該能看到訊息
 ```
 
 Windows 用 com0com 類似方式。
@@ -343,7 +343,7 @@ git commit -am "Day 4: UI bootstrap + terminal widget + serial tab"
 /clear
 @CLAUDE.md @.claude/skills/pyside6-gui/SKILL.md @.claude/skills/moxa-device-support/SKILL.md
 
-實作 src/moxaterm/ui/dialogs/new_session_dialog.py:
+實作 src/andyterm/ui/dialogs/new_session_dialog.py:
 
 - QDialog,分頁: Serial / SSH / SFTP
 - Serial tab:
@@ -368,12 +368,12 @@ git commit -am "Day 4: UI bootstrap + terminal widget + serial tab"
 ### 5-B
 
 ```
-實作 src/moxaterm/ui/session_tree.py + src/moxaterm/core/session_store.py:
+實作 src/andyterm/ui/session_tree.py + src/andyterm/core/session_store.py:
 
 session_store.py:
 - class SessionStore,JSON 檔案儲存在:
-    - Win: %APPDATA%/MoxaTerm/sessions.json
-    - Linux/macOS: ~/.config/moxaterm/sessions.json
+    - Win: %APPDATA%/AndyTerm/sessions.json
+    - Linux/macOS: ~/.config/andyterm/sessions.json
 - API: add / update / remove / get / list / as_tree()
 - 密碼/passphrase 不進 JSON,走 keyring
 - 資料夾分組 (folder: str | None)
@@ -405,7 +405,7 @@ git commit -am "Day 5: session dialog + tree + persistent store"
 /clear
 @CLAUDE.md @.claude/skills/sftp-client/SKILL.md @.claude/skills/pyside6-gui/SKILL.md
 
-實作 src/moxaterm/ui/sftp_panel.py:
+實作 src/andyterm/ui/sftp_panel.py:
 
 - QWidget,QSplitter(Horizontal),左右各一個檔案 view
 - 左邊:本機 (QFileSystemModel + QTreeView)
@@ -443,7 +443,7 @@ git commit -am "Day 6: SFTP dual-pane file browser"
 /clear
 @CLAUDE.md @.claude/skills/moxa-device-support/SKILL.md
 
-實作 src/moxaterm/moxa/nport_discovery.py。
+實作 src/andyterm/moxa/nport_discovery.py。
 
 採取 **保守策略**:
 1. 主要走 RFC2217,不自幹 NPort search protocol
@@ -503,10 +503,10 @@ UI: File → Quick Connect 下拉菜單,選了直接開 dialog 並預填。
 ruff check src tests
 ruff format src tests
 mypy src
-pytest -v --cov=moxaterm --cov-report=html
+pytest -v --cov=andyterm --cov-report=html
 
 pyinstaller --onefile --windowed --icon=resources/app.ico \
-  --name MoxaTerm src/moxaterm/__main__.py
+  --name AndyTerm src/andyterm/__main__.py
 
 git tag v0.1.0-alpha
 git commit -am "Day 7: Moxa integration + polish + v0.1.0-alpha"

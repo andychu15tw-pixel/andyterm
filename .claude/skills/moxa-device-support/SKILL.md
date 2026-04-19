@@ -1,11 +1,11 @@
 ---
 name: moxa-device-support
-description: Use this skill when implementing Moxa-specific device integrations in MoxaTerm — including NPort serial-over-Ethernet device discovery (UDP broadcast protocol port 4800), NPort operation modes (Real COM, TCP Server, TCP Client, UDP, RFC2217), UPort USB-to-serial adapter identification via VID 0x110A and PID mapping, Moxa industrial computer console access (V3400/V2406C/V1200), U-Boot prompt detection at Moxa-specific baudrates (921600, 115200), and common Moxa debugging workflows. Trigger whenever user mentions "Moxa", "NPort", "UPort", "V3400", "V2406", "V1200", "V2426", "MGate", "Real COM", "Moxa discovery", or works with Moxa-specific device connections.
+description: Use this skill when implementing Moxa-specific device integrations in AndyTerm — including NPort serial-over-Ethernet device discovery (UDP broadcast protocol port 4800), NPort operation modes (Real COM, TCP Server, TCP Client, UDP, RFC2217), UPort USB-to-serial adapter identification via VID 0x110A and PID mapping, Moxa industrial computer console access (V3400/V2406C/V1200), U-Boot prompt detection at Moxa-specific baudrates (921600, 115200), and common Moxa debugging workflows. Trigger whenever user mentions "Moxa", "NPort", "UPort", "V3400", "V2406", "V1200", "V2426", "MGate", "Real COM", "Moxa discovery", or works with Moxa-specific device connections.
 ---
 
 # Moxa Device Integration
 
-MoxaTerm 的差異化功能:原生支援 Moxa 硬體,在 session 對話框中提供「Scan Moxa NPort」與「Identify UPort」按鈕。
+AndyTerm 的差異化功能:原生支援 Moxa 硬體,在 session 對話框中提供「Scan Moxa NPort」與「Identify UPort」按鈕。
 
 ---
 
@@ -102,7 +102,7 @@ Offset  Length  Content
 
 ### 備援方案:MXconfig CLI
 
-部分 Moxa 工具有 CLI 模式 (如 `mxconfig.exe -search`),MoxaTerm 可以 shell out 呼叫,解析輸出。**先問使用者**要走 native socket 還是 wrap CLI。
+部分 Moxa 工具有 CLI 模式 (如 `mxconfig.exe -search`),AndyTerm 可以 shell out 呼叫,解析輸出。**先問使用者**要走 native socket 還是 wrap CLI。
 
 ---
 
@@ -110,11 +110,11 @@ Offset  Length  Content
 
 在 New Session 對話框中,NPort 連線應讓使用者選擇模式:
 
-| 模式 | 連線方式 | MoxaTerm 實作 |
+| 模式 | 連線方式 | AndyTerm 實作 |
 |---|---|---|
 | **Real COM** | 靠 Moxa driver 建立虛擬 COM | 當成一般 serial port 處理,選 `COMx` |
 | **TCP Server** (NPort 開 port 等連線) | raw TCP socket to `NPort_IP:port` | 新 pseudo-serial 類別 wrap `socket` |
-| **TCP Client** | NPort 主動連出,MoxaTerm 要聽 | 開 TCP listener |
+| **TCP Client** | NPort 主動連出,AndyTerm 要聽 | 開 TCP listener |
 | **UDP** | datagram | `socket.SOCK_DGRAM` |
 | **RFC2217** | 遠端 serial 參數控制 | pyserial 原生支援 `rfc2217://host:port` |
 
@@ -172,11 +172,11 @@ class TcpSerialAdapter:
 | V2426D (x86) | Console port | 115200 8N1 | 新款 (2026 發表) |
 | V1200 (ARM i.MX8M Plus) | Micro-USB console | **921600 8N1** | U-Boot **及** Linux |
 
-> 💡 V1200 的 921600 baudrate 常讓新人踩雷。MoxaTerm 應在 session 設定對話框選了「V1200」機型時自動帶 921600。
+> 💡 V1200 的 921600 baudrate 常讓新人踩雷。AndyTerm 應在 session 設定對話框選了「V1200」機型時自動帶 921600。
 
 ### 建議內建的「Quick Connect」Profile
 
-給客戶/FAE 快速上手,MoxaTerm 可內建:
+給客戶/FAE 快速上手,AndyTerm 可內建:
 
 ```yaml
 profiles:
@@ -209,7 +209,7 @@ profiles:
 
 ## U-Boot Prompt 偵測
 
-客戶常需要進 U-Boot 改環境變數。MoxaTerm 可以做個小 helper:
+客戶常需要進 U-Boot 改環境變數。AndyTerm 可以做個小 helper:
 
 ```python
 import re

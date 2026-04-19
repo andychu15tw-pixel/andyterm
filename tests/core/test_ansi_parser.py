@@ -1,5 +1,5 @@
 # tests/core/test_ansi_parser.py
-# L1 Unit tests for AnsiTerminal (moxaterm.core.ansi_parser)
+# L1 Unit tests for AnsiTerminal (andyterm.core.ansi_parser)
 #
 # 分層原則:core/ 不可 import 任何 Qt 模組,此層全 mock,< 100ms per test。
 # 目標覆蓋率:90%+
@@ -15,7 +15,7 @@
 
 import pytest
 
-from moxaterm.core.ansi_parser import AnsiTerminal
+from andyterm.core.ansi_parser import AnsiTerminal
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -403,12 +403,12 @@ class TestVt100Sequences:
         import sys
 
         # 確保模組已載入
-        import moxaterm.core.ansi_parser  # noqa: F401
+        import andyterm.core.ansi_parser  # noqa: F401
 
         qt_modules = [k for k in sys.modules if "PySide6" in k or "PyQt" in k]
         # ansi_parser 的存在不應引入 Qt
         # 注意:此 test 在隔離環境最可靠;這裡做保守檢查
-        parser_module = sys.modules.get("moxaterm.core.ansi_parser")
+        parser_module = sys.modules.get("andyterm.core.ansi_parser")
         assert parser_module is not None
         # 若 Qt 根本未被 import 則直接通過
         # 若 Qt 已被其他模組 import,此 test 不算失敗 (無法區分來源)

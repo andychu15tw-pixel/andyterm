@@ -14,9 +14,9 @@ from unittest.mock import MagicMock
 import paramiko
 import pytest
 
-from moxaterm.core.session import SshConfig
-from moxaterm.protocols.serial_transport import TransportError
-from moxaterm.protocols.ssh_transport import (
+from andyterm.core.session import SshConfig
+from andyterm.protocols.serial_transport import TransportError
+from andyterm.protocols.ssh_transport import (
     HostKeyMissingError,
     SftpTransport,
     SshShellTransport,

@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from moxaterm.core.session_store import SessionStore
+from andyterm.core.session_store import SessionStore
 
 __all__ = ["SessionTreeView"]
 

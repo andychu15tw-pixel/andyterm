@@ -37,7 +37,7 @@ def create_app(argv: list[str] | None = None) -> QApplication:
         argv = sys.argv
 
     app = QApplication(argv)
-    app.setApplicationName("MoxaTerm")
+    app.setApplicationName("AndyTerm")
     app.setApplicationVersion("0.1.0")
     app.setOrganizationName("Moxa")
 

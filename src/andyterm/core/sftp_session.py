@@ -19,8 +19,8 @@ from pathlib import Path
 
 import asyncssh
 
-from moxaterm.core.session import Session, SessionConfig, SshConfig
-from moxaterm.protocols.ssh_transport import SftpTransport
+from andyterm.core.session import Session, SessionConfig, SshConfig
+from andyterm.protocols.ssh_transport import SftpTransport
 
 __all__ = ["SftpSession"]
 

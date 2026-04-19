@@ -9,16 +9,16 @@ __all__ = ["AboutDialog"]
 
 
 class AboutDialog(QDialog):
-    """MoxaTerm About 對話框。"""
+    """AndyTerm About 對話框。"""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("關於 MoxaTerm / About MoxaTerm")
+        self.setWindowTitle("關於 AndyTerm / About AndyTerm")
         self.setMinimumWidth(360)
 
         layout = QVBoxLayout(self)
 
-        title = QLabel("<h2>MoxaTerm v0.1.0-alpha</h2>")
+        title = QLabel("<h2>AndyTerm v0.1.0-alpha</h2>")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 

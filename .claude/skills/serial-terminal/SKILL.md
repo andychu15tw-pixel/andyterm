@@ -1,6 +1,6 @@
 ---
 name: serial-terminal
-description: Use this skill when implementing or debugging Serial (RS-232/422/485) communication and terminal emulation in MoxaTerm — including pyserial configuration (baudrate, bytesize, parity, stopbits, flow control), port discovery on Windows/Linux, ANSI/VT100 escape sequence parsing with pyte, keyboard input encoding (arrow keys, Ctrl combos, function keys, XON/XOFF), line ending conversion (CR/LF/CRLF), binary/ASCII display modes, serial break signals, and handling common Moxa use cases (U-Boot console, Linux getty login, NPort Real COM mode, UPort multi-port adapters). Trigger when user mentions "serial", "COM port", "tty", "baudrate", "console", "VT100", "ANSI", "pyserial", "pyte", "終端機", "序列埠", "U-Boot", or encounters issues with garbled characters, missing ANSI colors, or key combinations not working.
+description: Use this skill when implementing or debugging Serial (RS-232/422/485) communication and terminal emulation in AndyTerm — including pyserial configuration (baudrate, bytesize, parity, stopbits, flow control), port discovery on Windows/Linux, ANSI/VT100 escape sequence parsing with pyte, keyboard input encoding (arrow keys, Ctrl combos, function keys, XON/XOFF), line ending conversion (CR/LF/CRLF), binary/ASCII display modes, serial break signals, and handling common Moxa use cases (U-Boot console, Linux getty login, NPort Real COM mode, UPort multi-port adapters). Trigger when user mentions "serial", "COM port", "tty", "baudrate", "console", "VT100", "ANSI", "pyserial", "pyte", "終端機", "序列埠", "U-Boot", or encounters issues with garbled characters, missing ANSI colors, or key combinations not working.
 ---
 
 # Serial Communication & Terminal Emulation
@@ -279,4 +279,4 @@ NPort 裝驅動後會出現虛擬 COM port,使用上與實體 COM 相同,但:
 
 ### Moxa NPort TCP Server Mode
 
-不走驅動,直接 TCP socket 到 NPort IP:port。在 MoxaTerm 裡可視為一種「pseudo-serial」,用 `socket` 取代 `serial.Serial`,其餘邏輯共用。
+不走驅動,直接 TCP socket 到 NPort IP:port。在 AndyTerm 裡可視為一種「pseudo-serial」,用 `socket` 取代 `serial.Serial`,其餘邏輯共用。

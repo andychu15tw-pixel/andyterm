@@ -1,9 +1,9 @@
 ---
 name: pyside6-gui
-description: Use this skill whenever writing, reviewing, or debugging PySide6/Qt6 UI code in MoxaTerm — including QWidget subclassing, layouts (QHBoxLayout/QVBoxLayout/QSplitter/QTabWidget), custom widgets (terminal emulator, session tree, SFTP dual-pane), Qt Signal/Slot wiring, QThread vs asyncio integration with qasync, QSS (Qt Style Sheets) theming, model/view (QAbstractItemModel, QTreeView), high-DPI handling, and preventing UI thread blocking. Also trigger when user mentions "卡住", "lag", "UI freeze", "QThread", "signal", "widget", "佈局", "PySide6", "Qt".
+description: Use this skill whenever writing, reviewing, or debugging PySide6/Qt6 UI code in AndyTerm — including QWidget subclassing, layouts (QHBoxLayout/QVBoxLayout/QSplitter/QTabWidget), custom widgets (terminal emulator, session tree, SFTP dual-pane), Qt Signal/Slot wiring, QThread vs asyncio integration with qasync, QSS (Qt Style Sheets) theming, model/view (QAbstractItemModel, QTreeView), high-DPI handling, and preventing UI thread blocking. Also trigger when user mentions "卡住", "lag", "UI freeze", "QThread", "signal", "widget", "佈局", "PySide6", "Qt".
 ---
 
-# PySide6 GUI Development for MoxaTerm
+# PySide6 GUI Development for AndyTerm
 
 ## Golden Rules
 
@@ -17,7 +17,7 @@ description: Use this skill whenever writing, reviewing, or debugging PySide6/Qt
 
 ## Threading Model
 
-MoxaTerm 有三條 thread:
+AndyTerm 有三條 thread:
 
 ```
 ┌─────────────────┐      Signal/Slot      ┌──────────────────┐

@@ -2,8 +2,8 @@
 
 結論先寫:
     - SessionStore 管理所有 session 設定的儲存與讀取。
-    - 儲存路徑:Windows → %APPDATA%/MoxaTerm/sessions.json;
-                Linux/macOS → ~/.config/moxaterm/sessions.json。
+    - 儲存路徑:Windows → %APPDATA%/AndyTerm/sessions.json;
+                Linux/macOS → ~/.config/andyterm/sessions.json。
     - 密碼不儲存於 JSON;走 keyring (呼叫端負責)。
     - 支援資料夾分組 (folder: str | None)。
     - 內建唯讀 Quick Profiles (Moxa 現場常用設定)。
@@ -19,7 +19,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from moxaterm.core.session import SerialConfig, SessionConfig, SshConfig
+from andyterm.core.session import SerialConfig, SessionConfig, SshConfig
 
 __all__ = ["SessionStore"]
 
@@ -95,8 +95,8 @@ def _get_store_path() -> Path:
     """回傳 sessions.json 儲存路徑 (平台相關)。"""
     if os.name == "nt":
         base = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
-        return base / "MoxaTerm" / "sessions.json"
-    return Path.home() / ".config" / "moxaterm" / "sessions.json"
+        return base / "AndyTerm" / "sessions.json"
+    return Path.home() / ".config" / "andyterm" / "sessions.json"
 
 
 class SessionStore:

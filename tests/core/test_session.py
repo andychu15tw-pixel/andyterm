@@ -15,7 +15,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from moxaterm.core.session import (
+from andyterm.core.session import (
     SerialConfig,
     Session,
     SessionConfig,

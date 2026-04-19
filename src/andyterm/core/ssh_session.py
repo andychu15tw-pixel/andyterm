@@ -17,9 +17,9 @@ from collections.abc import Callable
 
 import paramiko
 
-from moxaterm.core.ansi_parser import AnsiTerminal
-from moxaterm.core.session import Session, SessionConfig, SshConfig
-from moxaterm.protocols.ssh_transport import HostKeyMissingError, SshShellTransport
+from andyterm.core.ansi_parser import AnsiTerminal
+from andyterm.core.session import Session, SessionConfig, SshConfig
+from andyterm.protocols.ssh_transport import HostKeyMissingError, SshShellTransport
 
 __all__ = ["SshSession"]
 

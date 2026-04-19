@@ -1,4 +1,4 @@
-# MoxaTerm
+# AndyTerm
 
 類似 Xshell / Xftp 的跨平台 Serial + SFTP GUI 工具,專為工業嵌入式電腦 console 存取與檔案傳輸設計。
 
@@ -22,13 +22,13 @@ Python 3.11+ / PySide6 / pyserial / paramiko / asyncssh / pyte
 uv venv
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
 uv pip install -e ".[dev]"
-python -m moxaterm
+python -m andyterm
 ```
 
 ## 專案結構
 
 ```
-moxaterm/
+andyterm/
 ├── CLAUDE.md                # Claude Code 專案指令
 ├── .claude/
 │   ├── skills/              # 自動觸發的 domain skills
@@ -41,7 +41,7 @@ moxaterm/
 │       ├── ui-reviewer.md
 │       ├── python-reviewer.md
 │       └── test-engineer.md
-├── src/moxaterm/
+├── src/andyterm/
 │   ├── ui/                  # PySide6 View 層
 │   ├── core/                # 業務邏輯 (無 Qt 依賴)
 │   ├── protocols/           # 純 I/O 層
@@ -57,7 +57,7 @@ moxaterm/
 ## Claude Code 使用
 
 ```bash
-cd moxaterm
+cd andyterm
 claude                       # 自動讀取 CLAUDE.md
 
 # 呼叫特定 agent

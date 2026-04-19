@@ -20,7 +20,7 @@ import serial.serialutil
 from serial.tools import list_ports
 
 if TYPE_CHECKING:
-    from moxaterm.core.session import SerialConfig
+    from andyterm.core.session import SerialConfig
 
 __all__ = ["SerialTransport", "TransportError", "list_serial_ports"]
 

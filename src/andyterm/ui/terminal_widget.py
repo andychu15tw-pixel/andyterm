@@ -23,7 +23,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import QPlainTextEdit, QWidget
 
-from moxaterm.core.ansi_parser import AnsiTerminal
+from andyterm.core.ansi_parser import AnsiTerminal
 
 __all__ = ["TerminalWidget"]
 

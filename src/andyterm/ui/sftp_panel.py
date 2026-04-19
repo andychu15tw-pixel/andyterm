@@ -44,7 +44,7 @@ from PySide6.QtWidgets import (
 )
 from qasync import asyncSlot
 
-from moxaterm.core.sftp_session import SftpSession
+from andyterm.core.sftp_session import SftpSession
 
 __all__ = ["SftpPanel"]
 

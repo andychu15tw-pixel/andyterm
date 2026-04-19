@@ -33,7 +33,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from moxaterm.core.session import SerialConfig, SessionConfig, SshConfig
+from andyterm.core.session import SerialConfig, SessionConfig, SshConfig
 
 __all__ = ["NewSessionDialog"]
 
@@ -223,7 +223,7 @@ class NewSessionDialog(QDialog):
         self._port_combo.addItems(self._scan_ports())
 
     def _scan_moxa(self) -> None:
-        from moxaterm.moxa.uport_info import scan_moxa_uport
+        from andyterm.moxa.uport_info import scan_moxa_uport
         self._port_combo.clear()
         for info in scan_moxa_uport():
             self._port_combo.addItem(
