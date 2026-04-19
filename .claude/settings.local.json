@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import pyte; print\\('pyte', pyte.__version__\\)\")",
+      "Bash(uv --version)",
+      "Bash(py -0)",
+      "Read(//c/Users/88691/AppData/Local/Programs/Python/**)",
+      "Bash(.venv/Scripts/pytest tests/core/test_session.py -v)",
+      "Bash(.venv/Scripts/pytest tests/core/test_session.py --cov=moxaterm.core.session --cov-report=term-missing)",
+      "Bash(.venv/Scripts/python.exe -m pytest tests/core/ -v --tb=short)",
+      "Bash(.venv/Scripts/python.exe -c \"import pyte; print\\(pyte.__version__\\); import inspect; print\\(inspect.getsource\\(pyte.Screen.resize\\)\\)\")",
+      "Bash(.venv/Scripts/python.exe -c \"import pyte; import inspect; src = inspect.getsource\\(pyte.Screen.resize\\); print\\(src\\)\")",
+      "Bash(.venv/Scripts/ruff check *)",
+      "Bash(.venv/Scripts/mypy src *)",
+      "Bash(.venv/Scripts/python.exe -m pytest tests/core/ -q --tb=short --cov=moxaterm.core --cov-report=term-missing)",
+      "Bash(python -m pytest tests/integration/test_serial_transport.py tests/integration/test_ssh_transport.py -v)",
+      "Bash(.venv/Scripts/pytest tests/integration/test_serial_transport.py tests/integration/test_ssh_transport.py -v)",
+      "Bash(.venv/Scripts/python.exe -m pytest tests/ -q --tb=short --cov=moxaterm --cov-report=term-missing)",
+      "Bash(.venv/Scripts/python.exe -m pytest tests/ -q --tb=short)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  },
+  "prefersReducedMotion": true
+}
