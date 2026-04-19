@@ -6,7 +6,6 @@
                 Linux/macOS → ~/.config/andyterm/sessions.json。
     - 密碼不儲存於 JSON;走 keyring (呼叫端負責)。
     - 支援資料夾分組 (folder: str | None)。
-    - 內建唯讀 Quick Profiles (Moxa 現場常用設定)。
 
 分層原則:本模組位於 core/,不可 import Qt。
 """
@@ -22,73 +21,6 @@ from typing import Any
 from andyterm.core.session import SerialConfig, SessionConfig, SshConfig
 
 __all__ = ["SessionStore"]
-
-# ---------------------------------------------------------------------------
-# 內建 Quick Profiles (唯讀)
-# ---------------------------------------------------------------------------
-
-_QUICK_PROFILES: list[dict[str, Any]] = [
-    {
-        "id": "builtin-v3400",
-        "name": "Moxa V3400 Console",
-        "folder": "Quick Profiles",
-        "type": "SERIAL",
-        "port": "COM1",
-        "baudrate": 115200,
-        "bytesize": 8,
-        "parity": "N",
-        "stopbits": 1.0,
-        "xonxoff": False,
-        "rtscts": False,
-        "encoding": "utf-8",
-        "_builtin": True,
-    },
-    {
-        "id": "builtin-v1200",
-        "name": "Moxa V1200 U-Boot/Linux Console",
-        "folder": "Quick Profiles",
-        "type": "SERIAL",
-        "port": "COM1",
-        "baudrate": 921600,
-        "bytesize": 8,
-        "parity": "N",
-        "stopbits": 1.0,
-        "xonxoff": False,
-        "rtscts": False,
-        "encoding": "utf-8",
-        "_builtin": True,
-    },
-    {
-        "id": "builtin-v2406c",
-        "name": "Moxa V2406C Console",
-        "folder": "Quick Profiles",
-        "type": "SERIAL",
-        "port": "COM1",
-        "baudrate": 115200,
-        "bytesize": 8,
-        "parity": "N",
-        "stopbits": 1.0,
-        "xonxoff": False,
-        "rtscts": False,
-        "encoding": "utf-8",
-        "_builtin": True,
-    },
-    {
-        "id": "builtin-nport-rfc2217",
-        "name": "Moxa NPort RFC2217 Template",
-        "folder": "Quick Profiles",
-        "type": "SERIAL",
-        "port": "rfc2217://192.168.127.254:4001",
-        "baudrate": 115200,
-        "bytesize": 8,
-        "parity": "N",
-        "stopbits": 1.0,
-        "xonxoff": False,
-        "rtscts": False,
-        "encoding": "utf-8",
-        "_builtin": True,
-    },
-]
 
 
 def _get_store_path() -> Path:
@@ -166,32 +98,25 @@ class SessionStore:
         self._save()
 
     def get(self, session_id: str) -> dict[str, Any] | None:
-        """取得單一 session 資料 (包含 builtin)。"""
-        for p in _QUICK_PROFILES:
-            if p["id"] == session_id:
-                return dict(p)
+        """取得單一 session 資料。"""
         return dict(self._sessions[session_id]) if session_id in self._sessions else None
 
-    def list_sessions(self, include_builtin: bool = True) -> list[dict[str, Any]]:
-        """列出所有 session;builtin profiles 在前。"""
-        result: list[dict[str, Any]] = []
-        if include_builtin:
-            result.extend(_QUICK_PROFILES)
-        result.extend(self._sessions.values())
-        return result
+    def list_sessions(self) -> list[dict[str, Any]]:
+        """列出所有 session。"""
+        return list(self._sessions.values())
 
     # ------------------------------------------------------------------
     # Tree 結構 (供 UI 使用)
     # ------------------------------------------------------------------
 
-    def as_tree(self, include_builtin: bool = True) -> dict[str | None, list[dict[str, Any]]]:
+    def as_tree(self) -> dict[str | None, list[dict[str, Any]]]:
         """以資料夾分組回傳 session tree。
 
         回傳:
             {folder_name: [session_dict, ...], None: [...unfiled...]}
         """
         tree: dict[str | None, list[dict[str, Any]]] = {}
-        for s in self.list_sessions(include_builtin=include_builtin):
+        for s in self.list_sessions():
             folder = s.get("folder")
             tree.setdefault(folder, []).append(s)
         return tree

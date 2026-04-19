@@ -33,7 +33,6 @@ __all__ = ["SessionTreeView"]
 
 _ROLE_SESSION_ID = Qt.ItemDataRole.UserRole
 _ROLE_IS_FOLDER = Qt.ItemDataRole.UserRole + 1
-_ROLE_IS_BUILTIN = Qt.ItemDataRole.UserRole + 2
 
 
 class _Node:
@@ -44,12 +43,10 @@ class _Node:
         label: str,
         session_id: str | None = None,
         parent: _Node | None = None,
-        is_builtin: bool = False,
     ) -> None:
         self.label = label
         self.session_id = session_id
         self.is_folder = session_id is None
-        self.is_builtin = is_builtin
         self.parent: _Node | None = parent
         self.children: list[_Node] = []
 
@@ -90,12 +87,7 @@ class SessionTreeModel(QAbstractItemModel):
             folder_node = _Node(folder_label, parent=self._root)
             self._root.children.append(folder_node)
             for s in tree[folder]:
-                child = _Node(
-                    s.get("name", s["id"]),
-                    session_id=s["id"],
-                    parent=folder_node,
-                    is_builtin=bool(s.get("_builtin", False)),
-                )
+                child = _Node(s.get("name", s["id"]), session_id=s["id"], parent=folder_node)
                 folder_node.children.append(child)
 
     def refresh(self) -> None:
@@ -151,8 +143,6 @@ class SessionTreeModel(QAbstractItemModel):
             return node.session_id
         if role == _ROLE_IS_FOLDER:
             return node.is_folder
-        if role == _ROLE_IS_BUILTIN:
-            return node.is_builtin
         return None
 
     def flags(self, index: QModelIndex | QPersistentModelIndex) -> Qt.ItemFlag:
@@ -210,18 +200,13 @@ class SessionTreeView(QTreeView):
         if not session_id:
             return
 
-        is_builtin: bool = self._model.data(index, _ROLE_IS_BUILTIN) or False
-
         menu = QMenu(self)
         connect_action = menu.addAction("連線 / Connect")
-        if not is_builtin:
-            menu.addSeparator()
-            delete_action = menu.addAction("刪除 / Delete")
-        else:
-            delete_action = None
+        menu.addSeparator()
+        delete_action = menu.addAction("刪除 / Delete")
 
         action = menu.exec(self.viewport().mapToGlobal(pos))
         if action == connect_action:
             self.session_activated.emit(session_id)
-        elif delete_action and action == delete_action:
+        elif action == delete_action:
             self.session_delete_requested.emit(session_id)
