@@ -31,6 +31,7 @@ from moxaterm.core.session import SerialConfig, SessionConfig, SshConfig
 from moxaterm.core.session_store import SessionStore
 from moxaterm.core.sftp_session import SftpSession
 from moxaterm.core.ssh_session import SshSession
+from moxaterm.ui.dialogs.about_dialog import AboutDialog
 from moxaterm.ui.dialogs.new_session_dialog import NewSessionDialog
 from moxaterm.ui.session_tree import SessionTreeView
 from moxaterm.ui.sftp_panel import SftpPanel
@@ -107,20 +108,39 @@ class MainWindow(QMainWindow):
     def _build_menu(self) -> None:
         menu_bar = self.menuBar()
 
+        # 檔案選單
         file_menu = menu_bar.addMenu("檔案(&F)")
         new_session = file_menu.addAction("新增連線 / &New Session")
         new_session.setShortcut("Ctrl+N")
         new_session.triggered.connect(self._new_session_dialog)
-
         file_menu.addSeparator()
         exit_action = file_menu.addAction("離開 / E&xit")
         exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(self.close)
 
+        # 連線選單
         session_menu = menu_bar.addMenu("連線(&S)")
         close_tab = session_menu.addAction("關閉分頁 / &Close Tab")
         close_tab.setShortcut("Ctrl+W")
         close_tab.triggered.connect(self._close_current_tab)
+
+        next_tab = session_menu.addAction("下一個分頁 / Next Tab")
+        next_tab.setShortcut("Ctrl+Tab")
+        next_tab.triggered.connect(self._next_tab)
+
+        # 說明選單
+        help_menu = menu_bar.addMenu("說明(&H)")
+        about_action = help_menu.addAction("關於 / &About")
+        about_action.triggered.connect(self._show_about)
+
+    def _next_tab(self) -> None:
+        current = self._tabs.currentIndex()
+        count = self._tabs.count()
+        if count > 0:
+            self._tabs.setCurrentIndex((current + 1) % count)
+
+    def _show_about(self) -> None:
+        AboutDialog(self).exec()
 
     # ------------------------------------------------------------------
     # 新增 session
